@@ -169,7 +169,6 @@ public class controler {
         Scanner sc = new Scanner(System.in);
         System.out.println("Digite o codigo do produto que deseja adicionar ao carrinho\n");
         String cod = sc.next();
-
         Produto e=BancoDAO.getInstancia().get(cod);
         if(e!=null){
             System.out.println("Digite a quantidade que deseja adicionar ao carrinho\n");
@@ -177,6 +176,7 @@ public class controler {
             if(e.getQuantidade()>=quantidade){
                 e.setQuantidade(e.getQuantidade()-quantidade);
                 BancoDAO.getInstancia().update(e);
+                e.setQuantidade(quantidade);
                 Carrinho.getInstancia().add(e);
             }
             else{
@@ -221,13 +221,13 @@ public class controler {
                 System.out.println("Preco: "+e.getPreco());
                 System.out.println("Quantidade: "+e.getQuantidade());
                 System.out.println("Marca: "+e.getMarca());
+                total+=e.getPreco()*e.getQuantidade();
                 if(e instanceof Relogio){
                     System.out.println("Tipo: "+((Relogio) e).getTipo());
                 }
                 else if(e instanceof Perfume){
                     System.out.println("Ml: "+((Perfume) e).getTipo());
                 }
-                total+=e.getPreco()*e.getQuantidade();
             }
             System.out.println("Total: "+total);
         }

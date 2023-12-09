@@ -5,7 +5,7 @@ public class Main {
 
     public static void menu(){
         System.out.println("1 - Estoque");
-        System.out.println("1 - carrinho");
+        System.out.println("2 - carrinho");
         System.out.println("3 - Listar Produtos");
         System.out.println("4 - Sair");
     }
@@ -22,8 +22,9 @@ public class Main {
     static void menu3(){
         System.out.println("1 - Adicionar produto");
         System.out.println("2 - Remover produto");
-        System.out.println("2 - ver itens do carrinho");
+        System.out.println("3 - ver itens do carrinho");
         System.out.println("4 - Comprar");
+        System.out.println("5 - retornar");
     }
     public static void main(String[] args) {
         boolean exit = false;
@@ -94,6 +95,9 @@ public class Main {
                             break;
                         case 4:
                             controler.ComprarCarrinho();
+                            break;
+                        case  5:
+                            System.out.println("Retornando...");
                             break;
                     }
                    break;
