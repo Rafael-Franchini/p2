@@ -3,6 +3,7 @@ import model.Produto;
 import  model.Relogio;
 import model.Perfume;
 import dao.BancoDAO;
+import dao.Carrinho;
 import dao.bancodedados;
 
 import java.util.ArrayList;
@@ -162,6 +163,130 @@ public class controler {
             total+=e.getPreco()*e.getQuantidade();
         }
             System.out.println("Total: "+total);
+        }
+    }
+    public static void AdicionarCarrinho(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o codigo do produto que deseja adicionar ao carrinho\n");
+        String cod = sc.next();
+
+        Produto e=BancoDAO.getInstancia().get(cod);
+        if(e!=null){
+            System.out.println("Digite a quantidade que deseja adicionar ao carrinho\n");
+            int quantidade = sc.nextInt();
+            if(e.getQuantidade()>=quantidade){
+                e.setQuantidade(e.getQuantidade()-quantidade);
+                BancoDAO.getInstancia().update(e);
+                Carrinho.getInstancia().add(e);
+            }
+            else{
+                System.out.println("Quantidade insuficiente");
+            }
+        }
+        else{
+            System.out.println("Produto nao encontrado");
+        }
+    }
+    public static void RemoverCarrinho(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o codigo do produto que deseja remover do carrinho\n");
+        String cod = sc.next();
+
+        Produto e=Carrinho.getInstancia().get(cod);
+        if(e!=null){
+            System.out.println("Digite a quantidade que deseja remover do carrinho\n");
+            int quantidade = sc.nextInt();
+            if(e.getQuantidade()>=quantidade){
+                e.setQuantidade(e.getQuantidade()+quantidade);
+                BancoDAO.getInstancia().update(e);
+                Carrinho.getInstancia().delete(cod);
+            }
+            else{
+                System.out.println("Quantidade insuficiente");
+            }
+        }
+        else{
+            System.out.println("Produto nao encontrado");
+        }
+    }
+    public static void VizualizarCarrinho(){
+        ArrayList<Produto> lista = Carrinho.getInstancia().listar();
+        double total=0;
+        if(lista.isEmpty()){
+            System.out.println("Nao ha produtos no carrinho");
+        }else{
+            for(Produto e:lista){
+                System.out.println("Codigo: "+e.getCod());
+                System.out.println("Descricao: "+e.getDescricao());
+                System.out.println("Preco: "+e.getPreco());
+                System.out.println("Quantidade: "+e.getQuantidade());
+                System.out.println("Marca: "+e.getMarca());
+                if(e instanceof Relogio){
+                    System.out.println("Tipo: "+((Relogio) e).getTipo());
+                }
+                else if(e instanceof Perfume){
+                    System.out.println("Ml: "+((Perfume) e).getTipo());
+                }
+                total+=e.getPreco()*e.getQuantidade();
+            }
+            System.out.println("Total: "+total);
+        }
+    }
+    public static void ComprarCarrinho(){
+        Scanner sc = new Scanner(System.in);
+        VizualizarCarrinho();
+        System.out.println("Deseja comprar o carrinho?");
+        System.out.println("1 - Sim");
+        System.out.println("2 - Nao");
+        int op = sc.nextInt();
+        if(op==1){
+            System.out.println("Forma de pagamento");
+            System.out.println("1 - Dinheiro");
+            System.out.println("2 - Cartao");
+            int op2 = sc.nextInt();
+            if(op2==1){
+                System.out.println("Digite o valor pago");
+                double valor = sc.nextDouble();
+                ArrayList<Produto> lista = Carrinho.getInstancia().listar();
+                double total=0;
+                for(Produto e:lista){
+                    total+=e.getPreco()*e.getQuantidade();
+                }
+                if(valor>=total){
+                    System.out.println("Troco: "+(valor-total));
+                    Carrinho.getInstancia().limpar();
+                }
+                else{
+                    System.out.println("Valor insuficiente");
+                }
+            }
+            else if(op2==2){
+                System.out.println("1 - Credito");
+                System.out.println("2 - Debito");
+                int cartao = sc.nextInt();
+                ArrayList<Produto> lista = Carrinho.getInstancia().listar();
+                double total=0;
+                for(Produto e:lista){
+                    total+=e.getPreco()*e.getQuantidade();
+                }
+                System.out.println("Valor: "+total);
+                if (cartao==1){
+                    System.out.println("Compra realizada no credito");
+                    Carrinho.getInstancia().limpar();
+                }
+                else if(cartao==2){
+                    System.out.println("Compra realizada no debito");
+                    Carrinho.getInstancia().limpar();
+                }
+                else{
+                    System.out.println("Opcao invalida");
+                }
+            }
+            else{
+                System.out.println("Opcao invalida");
+            }
+        }else{
+            System.out.println("Compra cancelada");
         }
     }
 }
